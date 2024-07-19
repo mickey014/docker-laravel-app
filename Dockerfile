@@ -1,5 +1,6 @@
 FROM php:8.1-fpm
 
+# Install dependencies
 RUN apt-get update && apt-get install -y  \
     libfreetype6-dev \
     libjpeg-dev \
@@ -10,6 +11,9 @@ RUN apt-get update && apt-get install -y  \
     && docker-php-ext-install pdo_mysql -j$(nproc) gd \
     && docker-php-ext-install opcache
 
-# Dockerfile
+# Setting up opcache.ini
 ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="0"
-ADD opcache.ini "$PHP_INI_DIR/conf.d/opcache.ini"
+ADD ./docker/php/opcache.ini "$PHP_INI_DIR/conf.d/opcache.ini"
+
+# Nginx configuration
+COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
